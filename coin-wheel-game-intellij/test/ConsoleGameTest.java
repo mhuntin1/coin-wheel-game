@@ -1,8 +1,20 @@
 import org.junit.Test;
 
+/**
+ * A test class for ConsoleGame.java
+ *
+ * @author Jon Bowen, Jackie Nugent, Mark Huntington
+ * @version 0.0.1
+ */
+
 import static org.junit.Assert.*;
 
 public class ConsoleGameTest {
+
+    /**
+     * Tests getWelcome in ConsoleGame.java
+     *
+     */
     @Test
     public void getWelcomeTest(){
         ConsoleGame cg = new ConsoleGame();
@@ -16,6 +28,10 @@ public class ConsoleGameTest {
 //
 //    }
 
+    /**
+     * Tests getGameInstructions in ConsoleGame.java
+     *
+     */
     @Test
     public void getGameIntructionsTest(){
         ConsoleGame cg = new ConsoleGame();

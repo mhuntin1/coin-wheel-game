@@ -74,7 +74,7 @@ public class Player implements StrategicPlayer {
         char heads = 'H', tails = 'T';
         int numHeads = getCharCount(revealedPattern, heads);
 
-        char flipFrom = (numHeads >= _revealsPerSpin / 2) ? tails : heads;
+        char flipFrom = (numHeads > _revealsPerSpin / 2) ? tails : heads;
         char flipTo = (flipFrom == heads) ? tails : heads;
 
         CharSequence outSeq = revealedPattern

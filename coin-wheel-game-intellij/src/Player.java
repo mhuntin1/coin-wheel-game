@@ -8,6 +8,7 @@ public class Player implements StrategicPlayer {
 
     private int _coinsPerWheel;
     private int _revealsPerSpin;
+    private int _maxNumSpins;
 
     /**
      * Default constructor
@@ -24,6 +25,12 @@ public class Player implements StrategicPlayer {
      * @param maxNumSpins    the maximum number of spin allowed for the game
      */
     public void beginGame(int coinsPerWheel, int revealsPerSpin, int maxNumSpins) {
+        
+        this._coinsPerWheel = coinsPerWheel;
+
+        this._revealsPerSpin = revealsPerSpin;
+
+        this._maxNumSpins = maxNumSpins;
 
     }
 

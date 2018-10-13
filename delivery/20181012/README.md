@@ -39,6 +39,8 @@ It then gets new coin states based on the dominant coin face.
 
 ## Authors:
 
-*Jon Bowen
-*Jackie Nugent
-*Mark Huntington
+Jon Bowen
+
+Jackie Nugent
+
+Mark Huntington

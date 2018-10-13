@@ -1,0 +1,53 @@
+<?xml version = "1.0" encoding="UTF-8"?>
+<project  name="Coin-Wheel-Game" basedir="." default="clean">
+
+    <property name = "src" value = "src"/>
+    <property name = "test" value = "test"/>
+
+    <property name = "buildFolder" value = "build"/>
+    <property name = "srcOut" value = "${buildFolder}/src"/>
+    <property name = "testOut" value = "${buildFolder}/test"/>
+
+    <path id="classpath.test" cache="true">
+        <pathelement location="${srcOut}"/>
+        <pathelement location="lib/junit-4.12.jar"/>
+        <pathelement location="lib/hamcrest-core-1.3.jar"/>
+    </path>
+
+    <!-- BEGIN TARGETS -->
+    <target name="clean">
+        <delete dir="${buildFolder}"/>
+    </target>
+
+    <target name="build" depends="buildSource, buildTest" />
+
+    <target name="buildSource">
+        <mkdir dir="${srcOut}"/>
+        <javac includeantruntime="false" srcdir="${src}" destdir="${srcOut}">
+            <compilerarg value="-Xlint"/>
+        </javac>
+    </target>
+
+
+    <target name="buildTest" depends="buildSource">
+        <mkdir dir="${testOut}"/>
+        <javac includeantruntime="false" srcdir="${test}" destdir="${testOut}" >
+            <classpath refid="classpath.test"/>
+            <compilerarg value="-Xlint"/>
+        </javac>
+    </target>
+
+    <target name="test" depends="buildTest">
+        <junit printsummary="on" haltonfailure="yes" fork="true">
+            <classpath>
+                <path refid="classpath.test"/>
+                <pathelement location="${testOut}"/>
+            </classpath>
+            <formatter type="brief" usefile="false" />
+            <batchtest>
+                <fileset dir="${test}" includes="*.java" />
+            </batchtest>
+        </junit>
+    </target>
+
+</project>

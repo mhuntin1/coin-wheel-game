@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A player that can play the game
  *
@@ -9,6 +12,9 @@ public class Player implements StrategicPlayer {
     private int _coinsPerWheel;
     private int _revealsPerSpin;
     private int _maxNumSpins;
+
+    private int _turnNum;
+    private boolean _isFourTwoGame;
 
     /**
      * Default constructor
@@ -25,13 +31,17 @@ public class Player implements StrategicPlayer {
      * @param maxNumSpins    the maximum number of spin allowed for the game
      */
     public void beginGame(int coinsPerWheel, int revealsPerSpin, int maxNumSpins) {
-        
-        this._coinsPerWheel = coinsPerWheel;
 
-        this._revealsPerSpin = revealsPerSpin;
+        _coinsPerWheel = coinsPerWheel;
+        _revealsPerSpin = revealsPerSpin;
+        _maxNumSpins = maxNumSpins;
+        _turnNum = 0;
 
-        this._maxNumSpins = maxNumSpins;
-
+        if (coinsPerWheel == 4 && revealsPerSpin == 2) {
+            _isFourTwoGame = true;
+        } else {
+            _isFourTwoGame = false;
+        }
     }
 
     /**
@@ -44,6 +54,16 @@ public class Player implements StrategicPlayer {
      * exactly the number of '?' as permitted by reveals-per-spin
      */
     public CharSequence getSlotsToReveal() {
+        CharSequence resp;
+        if (_isFourTwoGame)
+            resp = getSlotsToRevealFourTwo(_turnNum);
+        else
+            resp = getSlotsToRevealGeneral();
+
+        return resp.toString();
+    }
+
+    protected CharSequence getSlotsToRevealGeneral() {
         int numReveals = Math.min(_revealsPerSpin, _coinsPerWheel);
         int numUnseen = _coinsPerWheel - numReveals;
 
@@ -57,8 +77,20 @@ public class Player implements StrategicPlayer {
             sb.append("-");
         }
 
-        return sb;
+        return sb.toString();
     }
+
+    protected CharSequence getSlotsToRevealFourTwo(int turnNum) {
+        List<String> reveals = new ArrayList<>();
+        reveals.add("-?-?");
+        reveals.add("--??");
+        reveals.add("?-?-");
+        reveals.add("-??-");
+        reveals.add("?-?-");
+
+        return reveals.get(turnNum);
+    }
+
 
     /**
      * Provides the coin-state set pattern for the current turn.
@@ -71,6 +103,18 @@ public class Player implements StrategicPlayer {
      * @return a proper set-pattern consisting of '-', 'H', and 'T'
      */
     public CharSequence getNewCoinStates(CharSequence revealedPattern) {
+        CharSequence resp;
+        if (_isFourTwoGame)
+            resp = getNewCoinStatesFourTwo(revealedPattern, _turnNum);
+        else
+            resp = getNewCoinStatesGeneral(revealedPattern);
+
+        _turnNum++;
+
+        return resp.toString();
+    }
+
+    protected CharSequence getNewCoinStatesGeneral(CharSequence revealedPattern) {
         char heads = 'H', tails = 'T';
         int numHeads = getCharCount(revealedPattern, heads);
 
@@ -82,9 +126,40 @@ public class Player implements StrategicPlayer {
                 .toUpperCase()
                 .replace(flipFrom, flipTo);
 
+        _turnNum++;
+
         return outSeq;
     }
 
+    protected CharSequence getNewCoinStatesFourTwo(
+            CharSequence revealedPattern,
+            int turnNum) {
+        String pattern = revealedPattern.toString();
+
+        String resp = "";
+        if (turnNum < 2) {
+            resp = pattern.replace("T", "H");
+        } else if (turnNum == 2) {
+            if (pattern.contains("T")) {
+                resp = pattern.replace("T", "H"); // Win!
+            } else {
+                resp = pattern.replaceFirst("H", "T");
+            }
+        } else if (turnNum == 3) {
+            int numHeads = getCharCount(pattern, 'H');
+            if (numHeads == 0) {
+                resp = pattern.replace("T", "H"); // Win!
+            } else if (numHeads == 2) {
+                resp = pattern.replace("H", "T"); // Win!
+            } else {
+                resp = flipAll(pattern).toString();
+            }
+        } else if (turnNum == 4) {
+            resp = flipAll(pattern).toString(); // Win!
+        }
+
+        return resp;
+    }
 
     /**
      * Counts the number of lower and upper case instances of token
@@ -104,4 +179,29 @@ public class Player implements StrategicPlayer {
 
         return headsCount;
     }
+
+    /**
+     * Flips the state of each visible coin. H -> T and T -> H
+     * @param charSeq The sequence of states
+     * @return The sequence of states with each state flipped
+     */
+    private CharSequence flipAll(CharSequence charSeq) {
+        String seq = charSeq.toString().toUpperCase();
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < seq.length(); i++) {
+            char c = seq.charAt(i);
+
+            if (c == '-') {
+                sb.append(c);
+            } else if (c == 'H') {
+                sb.append('T');
+            } else {
+                sb.append('H');
+            }
+        }
+        return sb.toString();
+    }
+
+
 }

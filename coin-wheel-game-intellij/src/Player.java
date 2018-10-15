@@ -185,7 +185,7 @@ public class Player implements StrategicPlayer {
      * @param charSeq The sequence of states
      * @return The sequence of states with each state flipped
      */
-    private CharSequence flipAll(CharSequence charSeq) {
+    protected CharSequence flipAll(CharSequence charSeq) {
         String seq = charSeq.toString().toUpperCase();
 
         StringBuilder sb = new StringBuilder();

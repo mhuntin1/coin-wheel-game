@@ -45,13 +45,11 @@ public class Player implements StrategicPlayer {
     }
 
     /**
-     * Provides the request pattern for the current turn.
-     * The returned pattern is of proper length, contains only
-     * '?' and '-', and has exactly the number of '?'
-     * as the permitted reveals per spin.
+     * Checks whether 4/2 strategy game is being called or general game is being called.  
      *
      * @return a proper reveal-pattern consisting of '-' and '?' with
-     * exactly the number of '?' as permitted by reveals-per-spin
+     * exactly the number of '?' as permitted by reveals-per-spin in either 
+     * strategy implementation or general implementation. 
      */
     public CharSequence getSlotsToReveal() {
         CharSequence resp;
@@ -62,6 +60,17 @@ public class Player implements StrategicPlayer {
 
         return resp.toString();
     }
+     /**
+     * Provides the request pattern for the current turn in a
+     * general game where no strategy is implemented.
+     * The returned pattern is of proper length, contains only
+     * '?' and '-', and has exactly the number of '?'
+     * as the permitted reveals per spin.
+     *
+     * @return a proper reveal-pattern consisting of '-' and '?' with
+     * exactly the number of '?' as permitted by reveals-per-spin during the no strategy
+     * general game play
+     */
 
     protected CharSequence getSlotsToRevealGeneral() {
         int numReveals = Math.min(_revealsPerSpin, _coinsPerWheel);
@@ -79,6 +88,17 @@ public class Player implements StrategicPlayer {
 
         return sb.toString();
     }
+     /**
+     * Provides the request pattern for the current turn in a 4 coin
+     * 2 reveal strategy implementation.
+     * The returned pattern is of proper length, contains only
+     * '?' and '-', and has exactly the number of '?'
+     * as the permitted reveals per spin.
+     *
+     * @return a proper reveal-pattern consisting of '-' and '?' with
+     * exactly the number of '?' as permitted by reveals-per-spin during the 4 coin
+     * 2 reveal strategy implementation.
+     */
 
     protected CharSequence getSlotsToRevealFourTwo(int turnNum) {
         List<String> reveals = new ArrayList<>();
@@ -113,7 +133,17 @@ public class Player implements StrategicPlayer {
 
         return resp.toString();
     }
-
+    /**
+     * Provides the coin-state set pattern for the current turn
+     * in the general game where no strategy is implemented.
+     * The returned pattern is a copy of the parameter
+     * in which all '-' are preserved and each location of
+     * 'H' and 'T' may be replaced by either 'H' or 'T'.
+     *
+     * @param revealedPattern a proper-length pattern
+     *                        consisting of '-', 'H', and 'T'
+     * @return a proper set-pattern consisting of '-', 'H', and 'T'
+     */
     protected CharSequence getNewCoinStatesGeneral(CharSequence revealedPattern) {
         char heads = 'H', tails = 'T';
         int numHeads = getCharCount(revealedPattern, heads);
@@ -130,7 +160,17 @@ public class Player implements StrategicPlayer {
 
         return outSeq;
     }
-
+    /**
+     * Provides the coin-state set pattern for the current turn
+     * in the 4 coin 2 reveal strategy implementation.
+     * The returned pattern is a copy of the parameter
+     * in which all '-' are preserved and each location of
+     * 'H' and 'T' may be replaced by either 'H' or 'T'.
+     *
+     * @param revealedPattern a proper-length pattern
+     *                        consisting of '-', 'H', and 'T'
+     * @return a proper set-pattern consisting of '-', 'H', and 'T'
+     */
     protected CharSequence getNewCoinStatesFourTwo(
             CharSequence revealedPattern,
             int turnNum) {

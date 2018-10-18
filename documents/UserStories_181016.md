@@ -15,7 +15,8 @@
     * JaCoCo
     * Proguard
     
-        * As a dev I want to go through the various analysis and minimize the errors specified in the code. 
+        * As a dev I want to go through the various analysis and minimize the errors specified in the code.
+        * As a dev I want to update the README to incorporate the new build environment.
 
 3. As a dev I want to work with clean code
     * As a dev I want to redesign the code to increase readability where it is needed. 

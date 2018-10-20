@@ -27,7 +27,7 @@ After each spin, a set amount of coins will be revealed to the player in order t
     Hidden state -> -
     Change coin state -> ?
 
-#### Steps:
+#### STEPS:
     (0) Set up of wheel with number of coins, number of reveals, and max number of spins.  
 
     (1) If the wheel is in a winning state, the player wins and the game is over.

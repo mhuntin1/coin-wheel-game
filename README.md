@@ -40,7 +40,7 @@ After each spin, a set amount of coins will be revealed to the player in order t
 
     (4) Coins are then hidden, and the wheel is spun at random amount.
 
-    (5) Repeat 1-3 until reach winning state or number of spins is depleted. 
+    (5) Repeat 1-4 until reach winning state or number of spins is depleted. 
 
 
 ## Strategic Player Implementation

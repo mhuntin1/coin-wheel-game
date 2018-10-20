@@ -8,6 +8,7 @@ import static org.junit.Assert.*;
 
 /**
  * Tests for the Player class
+ *
  * @author Jon Bowen, Jackie Nugent, Mark Huntington
  * @version 0.0.1
  */
@@ -25,8 +26,8 @@ public class PlayerTest {
             p.beginGame(coinsPerWheel, revealsPerSpin, 999);
 
             int numHidden = coinsPerWheel - revealsPerSpin;
-            String numQs = repeatChars('?', revealsPerSpin);
-            String padDash = repeatChars('-', numHidden);
+            String numQs = Utility.repeatChars('?', revealsPerSpin);
+            String padDash = Utility.repeatChars('-', numHidden);
 
             String expected = numQs + padDash;
             String actual = p.getSlotsToRevealGeneral().toString();
@@ -47,9 +48,9 @@ public class PlayerTest {
                 p.beginGame(coinsPerWheel, revealsPerSpin, 999);
 
                 int numHidden = coinsPerWheel - revealsPerSpin;
-                String padDash = repeatChars('-', numHidden);
-                String startHeads = repeatChars('H', revealsPerSpin);
-                String startTails = repeatChars('T', revealsPerSpin);
+                String padDash = Utility.repeatChars('-', numHidden);
+                String startHeads = Utility.repeatChars('H', revealsPerSpin);
+                String startTails = Utility.repeatChars('T', revealsPerSpin);
 
                 List<String> combos = getAllBinaryPermutations(revealsPerSpin);
 
@@ -80,27 +81,28 @@ public class PlayerTest {
     public void fourTwoPlayerTest() {
         Player p = new Player();
 
-        for(int gameNum = 0; gameNum < 10; gameNum++){
+        for (int gameNum = 0; gameNum < 10; gameNum++) {
             boolean didWin = false;
             p.beginGame(4, 2, 999);
-            CharSequence wheel = makeRandomWheel(4);
+            Wheel w = new Wheel(4, 2);
 
-            for (int i = 0; i < 5; i++){
+            for (int i = 0; i < 5; i++) {
 
                 CharSequence reveal = p.getSlotsToReveal().toString();
-                CharSequence revealed = getRevealedPattern(wheel, reveal);
+                CharSequence revealed = w.getRevealedPattern(reveal);
+
                 CharSequence newStates = p.getNewCoinStates(revealed);
-                wheel = setNewStates(wheel, newStates);
+                w.setNewStates(newStates);
 
-                if (didWin(wheel)){
+                if (w.didWin()) {
                     didWin = true;
-
+                    break;
                 }
-                wheel = spinWheel(wheel);
+
+                w.spinWheel();
             }
             assertTrue(didWin);
         }
-
     }
 
     /**
@@ -109,7 +111,7 @@ public class PlayerTest {
      * as expected
      */
     @Test
-    public void flipAllTest(){
+    public void flipAllTest() {
         Player p = new Player();
 
         CharSequence testWheel = "H-T-H-HTTH";
@@ -119,16 +121,8 @@ public class PlayerTest {
     }
 
     /**
-     * Creates a string of the same chars
-     */
-    private String repeatChars(char c, int times) {
-        char[] charArr = new char[times];
-        Arrays.fill(charArr, c);
-        return new String(charArr);
-    }
-
-    /**
      * Gets all of the binary permutations for a string
+     *
      * @param bitStringLength
      */
     private List<String> getAllBinaryPermutations(int bitStringLength) {
@@ -151,75 +145,4 @@ public class PlayerTest {
         return numHeads;
     }
 
-    /**
-     * A method which spins wheel by randomizing string elements
-     */
-    private String spinWheel(CharSequence wheel) {
-        int wheelLength = wheel.length();
-        int copyIndex = (int) (Math.random() * wheelLength);
-
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < wheelLength; i++){
-            sb.append(wheel.charAt(copyIndex));
-            copyIndex = (copyIndex + 1) % wheelLength;
-        }
-        return sb.toString();
-    }
-
-    /**
-     * get the reveal pattern of the wheel by keeping the "?"
-     * and changing everything else to "-"
-     */
-    private CharSequence getRevealedPattern(CharSequence wheel, CharSequence reveal){
-        StringBuilder sb = new StringBuilder();
-
-        for (int i = 0; i < reveal.length(); i++){
-            if (reveal.charAt(i) == '?')
-                sb.append(wheel.charAt(i));
-            else
-                sb.append('-');
-        }
-        return sb.toString();
-    }
-
-    /**
-     * sets new coin states for values in the string which are "-"
-     * @param wheel
-     * @param newStates
-     */
-    private CharSequence setNewStates(CharSequence wheel, CharSequence newStates){
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < wheel.length(); i++){
-            if (newStates.charAt(i) != '-')
-                sb.append(newStates.charAt(i));
-            else
-                sb.append(wheel.charAt(i));
-        }
-        return sb.toString();
-    }
-
-    /**
-     * Creates a random wheel for testing
-     */
-    private CharSequence makeRandomWheel(int coinsPerWheel){
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < coinsPerWheel; i ++){
-            if (Math.random() < 0.5)
-                sb.append('H');
-            else
-                sb.append('T');
-        }
-        return sb.toString();
-    }
-
-    /**
-     * Checks if the user won the game
-     */
-    private boolean didWin(CharSequence wheel){
-        for (int i = 1; i < wheel.length(); i++){
-            if (wheel.charAt(i-1) != wheel.charAt(i))
-                return false;
-        }
-        return true;
-    }
 }

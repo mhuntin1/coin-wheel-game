@@ -5,9 +5,13 @@ import java.util.List;
  * A player that can play the game
  *
  * @author Jon Bowen, Jackie Nugent, Mark Huntington
- * @version 0.0.1
+ * @version 0.0.2
  */
 public class Player implements StrategicPlayer {
+
+    private String _heads = "H";
+    private String _tails = "T";
+    private char _hidden = '-';
 
     private int _coinsPerWheel;
     private int _revealsPerSpin;
@@ -15,6 +19,7 @@ public class Player implements StrategicPlayer {
 
     private int _turnNum;
     private boolean _isFourTwoGame;
+    private List<String> _fourTwoReveals = makeFourTwoRevealPatterns();
 
     /**
      * Default constructor
@@ -33,7 +38,7 @@ public class Player implements StrategicPlayer {
     public void beginGame(int coinsPerWheel, int revealsPerSpin, int maxNumSpins) {
 
         _coinsPerWheel = coinsPerWheel;
-        _revealsPerSpin = revealsPerSpin;
+        _revealsPerSpin = Math.min(revealsPerSpin, coinsPerWheel);
         _maxNumSpins = maxNumSpins;
         _turnNum = 0;
 
@@ -53,10 +58,11 @@ public class Player implements StrategicPlayer {
      */
     public CharSequence getSlotsToReveal() {
         CharSequence resp;
-        if (_isFourTwoGame)
+        if (_isFourTwoGame) {
             resp = getSlotsToRevealFourTwo(_turnNum);
-        else
+        } else {
             resp = getSlotsToRevealGeneral();
+        }
 
         return resp.toString();
     }
@@ -72,6 +78,11 @@ public class Player implements StrategicPlayer {
      * general game play
      */
 
+    /**
+     * Requests to reveal the first n allowed consecutive positions.
+     *
+     * @return A string with the first n characters set to ?
+     */
     protected CharSequence getSlotsToRevealGeneral() {
         int numReveals = Math.min(_revealsPerSpin, _coinsPerWheel);
         int numUnseen = _coinsPerWheel - numReveals;
@@ -100,17 +111,23 @@ public class Player implements StrategicPlayer {
      * 2 reveal strategy implementation.
      */
 
+    /**
+     * Follows the 4-2 game player play book. Asks consecutively for
+     * predetermined revlead patterns that guarantee a win by the 5th turn.
+     *
+     * @param turnNum
+     * @return
+     */
     protected CharSequence getSlotsToRevealFourTwo(int turnNum) {
-        List<String> reveals = new ArrayList<>();
-        reveals.add("-?-?");
-        reveals.add("--??");
-        reveals.add("?-?-");
-        reveals.add("-??-");
-        reveals.add("?-?-");
+        String resp;
+        if (turnNum < _fourTwoReveals.size()) {
+            resp = _fourTwoReveals.get(turnNum);
+        } else {
+            resp = "??--";
+        }
 
-        return reveals.get(turnNum);
+        return resp;
     }
-
 
     /**
      * Provides the coin-state set pattern for the current turn.
@@ -124,11 +141,11 @@ public class Player implements StrategicPlayer {
      */
     public CharSequence getNewCoinStates(CharSequence revealedPattern) {
         CharSequence resp;
-        if (_isFourTwoGame)
+        if (_isFourTwoGame) {
             resp = getNewCoinStatesFourTwo(revealedPattern, _turnNum);
-        else
+        } else {
             resp = getNewCoinStatesGeneral(revealedPattern);
-
+        }
         _turnNum++;
 
         return resp.toString();
@@ -145,8 +162,8 @@ public class Player implements StrategicPlayer {
      * @return a proper set-pattern consisting of '-', 'H', and 'T'
      */
     protected CharSequence getNewCoinStatesGeneral(CharSequence revealedPattern) {
-        char heads = 'H', tails = 'T';
-        int numHeads = getCharCount(revealedPattern, heads);
+        char heads = _heads.charAt(0), tails = _tails.charAt(0);
+        int numHeads = Utility.getCharCount(revealedPattern, heads);
 
         char flipFrom = (numHeads > _revealsPerSpin / 2) ? tails : heads;
         char flipTo = (flipFrom == heads) ? tails : heads;
@@ -160,6 +177,7 @@ public class Player implements StrategicPlayer {
 
         return outSeq;
     }
+
     /**
      * Provides the coin-state set pattern for the current turn
      * in the 4 coin 2 reveal strategy implementation.
@@ -176,52 +194,62 @@ public class Player implements StrategicPlayer {
             int turnNum) {
         String pattern = revealedPattern.toString();
 
-        String resp = "";
-        if (turnNum < 2) {
-            resp = pattern.replace("T", "H");
-        } else if (turnNum == 2) {
-            if (pattern.contains("T")) {
-                resp = pattern.replace("T", "H"); // Win!
-            } else {
-                resp = pattern.replaceFirst("H", "T");
-            }
-        } else if (turnNum == 3) {
-            int numHeads = getCharCount(pattern, 'H');
-            if (numHeads == 0) {
-                resp = pattern.replace("T", "H"); // Win!
-            } else if (numHeads == 2) {
-                resp = pattern.replace("H", "T"); // Win!
-            } else {
-                resp = flipAll(pattern).toString();
-            }
-        } else if (turnNum == 4) {
-            resp = flipAll(pattern).toString(); // Win!
+        String resp;
+        switch (turnNum) {
+            case 0:
+            case 1:
+                resp = fourTwoFirstTwoTurnsResp(pattern);
+                break;
+            case 2:
+                resp = fourTwoThirdTurnsResp(pattern);
+                break;
+            case 3:
+                resp = fourTwoFourthTurnsResp(pattern);
+                break;
+            case 4:
+                resp = fourTwoFifthTurnsResp(pattern);
+                break;
+            default:
+                resp = getNewCoinStatesGeneral(pattern).toString();
+        }
+        return resp;
+    }
+
+    private String fourTwoFirstTwoTurnsResp(String pattern) {
+        return pattern.replace(_tails, _heads);
+    }
+
+    private String fourTwoThirdTurnsResp(String pattern) {
+        String resp;
+        if (pattern.contains(_tails)) {
+            resp = pattern.replace(_tails, _heads); // Win!
+        } else {
+            resp = pattern.replaceFirst(_heads, _tails);
         }
 
         return resp;
     }
 
-    /**
-     * Counts the number of lower and upper case instances of token
-     * in the char sequence
-     *
-     * @param charSeq     The sequence to consider
-     * @param charToCount The character to count occurrences of
-     * @return The number of times that upper or lower case charToCount
-     * occurs in charSeq
-     */
-    private int getCharCount(CharSequence charSeq, char charToCount) {
-        int headsCount = (int) charSeq
-                .chars()
-                .map(Character::toUpperCase)
-                .filter(c -> c == charToCount)
-                .count();
+    private String fourTwoFourthTurnsResp(String pattern) {
+        String resp;
+        int numHeads = Utility.getCharCount(pattern, _heads.charAt(0));
+        if (numHeads == 0) {
+            resp = pattern.replace(_tails, _heads); // Win!
+        } else if (numHeads == 2) {
+            resp = pattern.replace(_heads, _tails); // Win!
+        } else {
+            resp = flipAll(pattern).toString();
+        }
+        return resp;
+    }
 
-        return headsCount;
+    private String fourTwoFifthTurnsResp(String pattern) {
+        return flipAll(pattern).toString();
     }
 
     /**
      * Flips the state of each visible coin. H -> T and T -> H
+     *
      * @param charSeq The sequence of states
      * @return The sequence of states with each state flipped
      */
@@ -232,16 +260,30 @@ public class Player implements StrategicPlayer {
         for (int i = 0; i < seq.length(); i++) {
             char c = seq.charAt(i);
 
-            if (c == '-') {
+            if (c == _hidden) {
                 sb.append(c);
-            } else if (c == 'H') {
-                sb.append('T');
+            } else if (c == _heads.charAt(0)) {
+                sb.append(_tails.charAt(0));
             } else {
-                sb.append('H');
+                sb.append(_heads.charAt(0));
             }
         }
         return sb.toString();
     }
 
+    /**
+     * Returns the predetermined query strings for the 4-2 player
+     * @return
+     */
+    private List<String> makeFourTwoRevealPatterns() {
+        List<String> reveals = new ArrayList<>();
+        reveals.add("-?-?");
+        reveals.add("--??");
+        reveals.add("?-?-");
+        reveals.add("-??-");
+        reveals.add("?-?-");
+
+        return reveals;
+    }
 
 }

@@ -71,11 +71,24 @@ Algorithm for a guaranteed win state in five moves or less with four coins and t
  
      Spin 5: Open and reveal two diagonal coins and flip both coins to win.  
 
-#### Directory Setup:
+### Directory Setup:
  
- UPDATE HERE
+ #### TOP LEVEL: 
+        - Project with updated Ant environment (coin-wheel-game-intellij) 
+        - Record of deliveries by submission date (delivery)
+        - User stories and documentation (documents)
+        - Overview and Instructions (README.md)
+        - Development Tools and Configuration (Requirements.md)
+        - Basic build for Ant (build.xml)
 
-#### lib/
+ #### coin-wheel-game-intellij/
+        - Configuration of IDE (.idea)
+        - Directory of support tools for development and testing (lib/)
+        - Java source code (src)
+        - JUnit source code (test)
+        - Build for updated Ant environment (build.xml)
+        
+ #### lib/
 
   - Files that support JUnit, JaCoCo, Checkstyle, Java2HTML, CPD, PMD, Proguard
 
@@ -94,6 +107,15 @@ Algorithm for a guaranteed win state in five moves or less with four coins and t
       * https://sourceforge.net/projects/proguard/
 
 #### Ant Tasks
+
+The default target (all):
+- removes artifacts from the previous builds and tests
+- creates maintainer-appropriate API documentation (doc-private)
+- generates HTML formatted versions of the source code
+- verifies adherence to Java coding conventions
+- run JUnit tests and formats results
+- determines code coverage fo the tests
+- flags aread of the source code most likely to contain weaknesses (including complexity metrics)
 
 The set of main targets can be displayed at the command line using:  
 
@@ -116,15 +138,15 @@ Example:
       doc-private          generate the maintenance documentation
       env                  display build parameters
       format               generate formatted versions of source code
-      optimize             optimize using proguard
+      optimize             optimize using proguard --currently unavailable
       pmd                  process source with PMD
       report               format junit test results
       run                  run driver
       test                 run junit tests
       testCoverage         run junit tests with JaCoCo instrumentation
       testCoverageReport   format JUnit and JaCoCo test results
-      testOptimized        run junit tests using optimized jar
-      testOptimizedReport  format junit test results using optimized jar
+      testOptimized        run junit tests using optimized jar --currently unavailable
+      testOptimizedReport  format junit test results using optimized jar --currently unavailable
     Default target: all
     %
 

@@ -27,4 +27,17 @@
 * asdf
 
 ### Comments from Jackie
-* asdf
+* With the unreliability of class time to work in our groups, we need to focus on organization of 
+  tasks so everyone is clear on what they can be working on during a sprint. 
+* I think we may be overestimating what can be done in a sprint timeframe. We might need to pull back the 
+  amount of user stories or tasks that can be achieved in the allotted time and create a more thorough breakdown 
+  of those user stories to see what is achievable during a sprint. 
+* We need to take into account how much time it takes to learn new subject matter.
+* Due to commitments outside of class, we need to be understanding of when team members can realistically work 
+  on their own tasks. Everyone has a different method of working and an outside schedule they must work around.
+* For the next sprint, I would like to see:
+	* A good estimate of a sprint timeframe 
+	* Organization of tasks and user stories
+	* Better breakdown of those tasks and user stories
+	* Adjustments of those tasks and user stories to fit within the sprint
+	* The continuation of the great communication we were able to achieve this last round	

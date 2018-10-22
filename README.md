@@ -74,19 +74,19 @@ Algorithm for a guaranteed win state in five moves or less with four coins and t
 ### Directory Setup:
  
  #### TOP LEVEL: 
-        - Project with updated Ant environment (coin-wheel-game-intellij) 
-        - Record of deliveries by submission date (delivery)
-        - User stories and documentation (documents)
-        - Overview and Instructions (README.md)
-        - Development Tools and Configuration (Requirements.md)
-        - Basic build for Ant (build.xml)
+   - Project with updated Ant environment (coin-wheel-game-intellij) 
+   - Record of deliveries by submission date (delivery)
+   - User stories and documentation (documents)
+   - Overview and Instructions (README.md)
+   - Development Tools and Configuration (Requirements.md)
+   - Basic build for Ant (build.xml)
 
  #### coin-wheel-game-intellij/
-        - Configuration of IDE (.idea)
-        - Directory of support tools for development and testing (lib/)
-        - Java source code (src)
-        - JUnit source code (test)
-        - Build for updated Ant environment (build.xml)
+   - Configuration of IDE (.idea)
+   - Directory of support tools for development and testing (lib/)
+   - Java source code (src)
+   - JUnit source code (test)
+   - Build for updated Ant environment (build.xml)
         
  #### lib/
 
